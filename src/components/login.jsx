@@ -3,9 +3,11 @@ import { getAuth, signInWithEmailAndPassword } from "firebase/auth";
 import app from "../firebase";
 import "./Login.css";
 
-function Login() {
+function Login({ onIrARegistro }) {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const Auth = getAuth(app);  // ← las variables y funciones van AQUÍ arriba
+
 
   const auth = getAuth(app);
 
@@ -45,8 +47,8 @@ function Login() {
 
         <button onClick={handleLogin}>Iniciar sesión</button>
 
-        <p className="register">
-          ¿No tienes cuenta? <span>Regístrate</span>
+         <p className="register">
+          ¿No tienes cuenta? <span onClick={onIrARegistro}>Regístrate</span>
         </p>
       </div>
     </div>
