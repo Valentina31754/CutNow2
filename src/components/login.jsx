@@ -39,6 +39,15 @@ export default function Login() {
         <button onClick={handleLogin} className="btn-primary">
           Iniciar sesión
         </button>
+
+        <p className="forgot">¿Olvidaste tu contraseña?</p>
+
+        <p className="register">
+          ¿No tienes cuenta?{" "}
+          <span onClick={() => navigate("/registro")}>
+            Regístrate
+          </span>
+        </p>
       </div>
     </div>
   );
