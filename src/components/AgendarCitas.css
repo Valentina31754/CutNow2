@@ -1,0 +1,21 @@
+html, body {
+  height: 100%;
+  margin: 0;
+}
+
+.header{
+
+    display:flex;
+    justify-content: center;
+    align-items: center;
+    color: red;
+
+}
+.reservasContainer{
+    position: fixed;
+    inset: 0;
+
+    display:flex;
+    justify-content: center;
+    align-items: center;
+}

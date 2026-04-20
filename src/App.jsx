@@ -1,8 +1,21 @@
-import React from "react";
-import Login from "./components/login.jsx";
+import { BrowserRouter, Routes, Route } from "react-router-dom";
+import Login from "./components/login";
+import Catalogo from "./components/Catalogo";
+import Cita from "./components/Cita";
+import MisCitas from "./components/MisCitas";
+import AgendarCitas from "./components/AgendarCitas";
 
-function App() {
-  return <Login />
+
+export default function App() {
+  return (
+    <BrowserRouter>
+      <Routes>
+        <Route path="/" element={<Login />} />
+        <Route path="/catalogo" element={<Catalogo />} />
+        <Route path="/cita/:id" element={<Cita />} />
+        <Route path="/mis-citas" element={<MisCitas />} />
+        <Route path="/agendar" element={<AgendarCitas />} />
+      </Routes>
+    </BrowserRouter>
+  );
 }
-
-export default App;
