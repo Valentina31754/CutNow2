@@ -1,21 +1,299 @@
-html, body {
-  height: 100%;
-  margin: 0;
+/* src/components/AgendarCitas.css */
+
+.agendar-pagina {
+  min-height: 100vh;
+  background: #000;
+  display: flex;
+  justify-content: center;
+  padding-top: 40px;
+  padding-bottom: 80px;
 }
 
-.header{
-
-    display:flex;
-    justify-content: center;
-    align-items: center;
-    color: red;
-
+.agendar-contenedor {
+  width: 100%;
+  max-width: 560px;
+  padding: 0 24px;
 }
-.reservasContainer{
-    position: fixed;
-    inset: 0;
 
-    display:flex;
-    justify-content: center;
-    align-items: center;
+.agendar-titulo {
+  text-align: center;
+  margin-bottom: 32px;
+  font-size: 36px;
+}
+
+/* ── Barra de progreso ── */
+.agendar-progreso {
+  display: flex;
+  justify-content: center;
+  gap: 16px;
+  margin-bottom: 40px;
+}
+
+.progreso-dot {
+  width: 36px;
+  height: 36px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: 700;
+  transition: all 0.3s;
+  border: 2px solid #444;
+  background: transparent;
+  color: #666;
+}
+
+.progreso-dot.completado {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: #000;
+  box-shadow: 0 0 10px rgba(0, 200, 83, 0.5);
+}
+
+/* ── Error ── */
+.agendar-error {
+  background: rgba(239, 68, 68, 0.12);
+  border: 1px solid rgba(239, 68, 68, 0.4);
+  color: #f87171;
+  border-radius: 10px;
+  padding: 14px 18px;
+  margin-bottom: 24px;
+  font-size: 14px;
+}
+
+/* ── Grupos de campos ── */
+.agendar-grupo {
+  margin-bottom: 28px;
+}
+
+.agendar-label {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  color: #fff;
+  font-size: 18px;
+  font-weight: 500;
+  margin-bottom: 12px;
+}
+
+.agendar-numerito {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  background: var(--accent);
+  color: #000;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 14px;
+  font-weight: 700;
+  flex-shrink: 0;
+  box-shadow: 0 0 12px rgba(0, 200, 83, 0.4);
+}
+
+.agendar-select,
+.agendar-fecha {
+  width: 100%;
+  padding: 16px 18px;
+  background: #1a1a1a;
+  border: 1px solid #2a2a2a;
+  border-radius: 10px;
+  color: #d1d5db;
+  font-size: 15px;
+  outline: none;
+  cursor: pointer;
+  transition: border-color 0.2s;
+  box-sizing: border-box;
+}
+
+.agendar-fecha {
+  color-scheme: dark;
+}
+
+.agendar-select:disabled,
+.agendar-fecha:disabled {
+  opacity: 0.45;
+  cursor: not-allowed;
+}
+
+.agendar-select:hover:not(:disabled),
+.agendar-fecha:hover:not(:disabled) {
+  border-color: #444;
+}
+
+/* ── Resumen ── */
+.agendar-resumen {
+  background: #111;
+  border: 1px solid #1f1f1f;
+  border-radius: 14px;
+  padding: 20px 24px;
+  margin-bottom: 20px;
+}
+
+.agendar-resumen-titulo {
+  color: #fff;
+  font-size: 15px;
+  font-weight: 600;
+  margin-bottom: 16px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid #1f1f1f;
+}
+
+.agendar-resumen-fila {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding-bottom: 10px;
+  margin-bottom: 10px;
+  border-bottom: 1px solid #1a1a1a;
+  font-size: 14px;
+}
+
+.agendar-resumen-fila.ultima {
+  border-bottom: none;
+  padding-bottom: 0;
+  margin-bottom: 0;
+}
+
+.resumen-label {
+  color: #9ca3af;
+}
+
+.resumen-valor {
+  color: #fff;
+  font-weight: 500;
+}
+
+.resumen-precio {
+  color: var(--accent);
+  font-weight: 700;
+  font-size: 20px;
+}
+
+/* ── Botón confirmar ── */
+.agendar-btn-confirmar {
+  width: 100%;
+  padding: 16px;
+  background: linear-gradient(135deg, var(--accent), var(--accent-hover));
+  color: #000;
+  border: none;
+  border-radius: 10px;
+  font-weight: 700;
+  font-size: 17px;
+  transition: all 0.2s;
+  margin-top: 8px;
+  cursor: pointer;
+  box-shadow: 0 8px 24px rgba(0, 200, 83, 0.35);
+}
+
+.agendar-btn-confirmar:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+  box-shadow: none;
+}
+
+.agendar-btn-confirmar:hover:not(:disabled) {
+  transform: translateY(-1px);
+  box-shadow: 0 12px 28px rgba(0, 200, 83, 0.45);
+}
+
+/* ── Pantalla cargando ── */
+.agendar-cargando {
+  min-height: 100vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  color: var(--accent);
+  font-size: 20px;
+  background: #000;
+}
+
+/* ── Pantalla de éxito ── */
+.exito-wrap {
+  min-height: 100vh;
+  background: #000;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  padding: 24px;
+}
+
+.exito-card {
+  background: #111;
+  border: 1px solid #222;
+  border-radius: 20px;
+  padding: 48px 40px;
+  text-align: center;
+  max-width: 420px;
+  width: 100%;
+}
+
+.exito-icono {
+  font-size: 64px;
+  margin-bottom: 20px;
+}
+
+.exito-titulo {
+  color: #fff;
+  font-size: 28px;
+  margin-bottom: 12px;
+}
+
+.exito-detalle {
+  color: #9ca3af;
+  font-size: 15px;
+  margin-bottom: 6px;
+}
+
+.exito-fecha {
+  color: var(--accent);
+  font-weight: 600;
+  font-size: 18px;
+  margin-bottom: 6px;
+}
+
+.exito-precio {
+  color: #fff;
+  font-weight: 700;
+  font-size: 22px;
+  margin-bottom: 32px;
+}
+
+.exito-btns {
+  display: flex;
+  gap: 12px;
+  justify-content: center;
+}
+
+.btn-ver-citas {
+  padding: 12px 24px;
+  background: var(--accent);
+  color: #000;
+  border: none;
+  border-radius: 8px;
+  font-weight: 700;
+  font-size: 15px;
+  cursor: pointer;
+  transition: 0.15s;
+}
+
+.btn-ver-citas:hover {
+  transform: translateY(-1px);
+}
+
+.btn-agendar-otra {
+  padding: 12px 24px;
+  background: #2a2a2a;
+  color: #d1d5db;
+  border: 1px solid #333;
+  border-radius: 8px;
+  font-weight: 500;
+  font-size: 15px;
+  cursor: pointer;
+  transition: 0.15s;
+}
+
+.btn-agendar-otra:hover {
+  background: #333;
 }

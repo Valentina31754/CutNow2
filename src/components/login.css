@@ -28,6 +28,8 @@ html, body {
 
 .login-card h2 {
   margin-bottom: 20px;
+  color: white;
+
 }
 
 .login-card input {

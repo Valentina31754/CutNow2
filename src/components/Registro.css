@@ -1,4 +1,9 @@
-
+html, body, #root {
+  height: 100%;
+  width: 100%;
+  margin: 0;
+  padding: 0;
+}
 
 * {
   box-sizing: border-box;
@@ -6,7 +11,9 @@
 
 .register-page {
   min-height: 100vh;
-  display: flex;
+  width: 100%;
+  display: flex;          
+  flex-direction: row;   
   background-color: #1a1a1a;
   font-family: sans-serif;
 }
@@ -16,9 +23,11 @@
   flex: 1;
   display: flex;
   flex-direction: column;
-  justify-content: center;
+  justify-content: center;   
+  align-items: flex-start;   
   padding: 60px;
   color: white;
+  text-align: left;      
 }
 
 .register-left h1 {
@@ -38,6 +47,8 @@
   flex: 1;
   display: flex;
   justify-content: center;
+
+  
   align-items: center;
   padding: 40px;
 }
@@ -54,6 +65,7 @@
 .register-card h2 {
   font-size: 1.4rem;
   margin-bottom: 24px;
+   color: white;
 }
 
 .register-card label {
