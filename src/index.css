@@ -27,7 +27,10 @@ html, body, #root {
 }
 
 body {
-  background: radial-gradient(circle at top, #0a0a0a, #000);
+  background-image: url('/public/fondodark.png');
+  background-repeat: repeat;
+  background-attachment: fixed;
+
   font-family: var(--sans);
   color: var(--text);
 }

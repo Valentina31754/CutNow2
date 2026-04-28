@@ -36,8 +36,8 @@ export default function AgendarCitas() {
     async function cargar() {
       try {
         const [snapSedes, snapServicios] = await Promise.all([
-          getDocs(query(collection(db, "sedes"), where("activa", "==", true))),
-          getDocs(query(collection(db, "servicios"), where("activo", "==", true))),
+          getDocs(query(collection(db, "Sedes"), where("activa", "==", true))),
+          getDocs(query(collection(db, "Servicios"), where("activo", "==", true))),
         ]);
         setSedes(snapSedes.docs.map(d => ({ id: d.id, ...d.data() })));
         setServicios(snapServicios.docs.map(d => ({ id: d.id, ...d.data() })));
@@ -60,7 +60,7 @@ export default function AgendarCitas() {
     async function cargarBarberos() {
       const snap = await getDocs(
         query(
-          collection(db, "barberos"),
+          collection(db, "Barberos"),
           where("sede_id", "==", sedeElegida.id),
           where("estado", "==", "activo")
         )
@@ -76,7 +76,7 @@ export default function AgendarCitas() {
     setHoraElegida("");
 
     async function cargarHoras() {
-      const disponRef = doc(db, "barberos", barberoElegido.id, "disponibilidad", fechaElegida);
+      const disponRef = doc(db, "Barberos", barberoElegido.id, "disponibilidad", fechaElegida);
       const disponSnap = await getDoc(disponRef);
       const ocupados = disponSnap.exists() ? disponSnap.data().slots_ocupados || [] : [];
 
@@ -112,7 +112,7 @@ export default function AgendarCitas() {
     try {
       const usuario = auth.currentUser;
       const citaRef = doc(collection(db, "citas"));
-      const disponRef = doc(db, "barberos", barberoElegido.id, "disponibilidad", fechaElegida);
+      const disponRef = doc(db, "Barberos", barberoElegido.id, "disponibilidad", fechaElegida);
 
       await runTransaction(db, async (transaction) => {
         const disponSnap = await transaction.get(disponRef);
@@ -127,12 +127,12 @@ export default function AgendarCitas() {
           usuario_id: usuario.uid,
           usuario_nombre: usuario.displayName || usuario.email,
           barbero_id: barberoElegido.id,
-          barbero_nombre: barberoElegido.nombre,
+          barbero_nombre: barberoElegido.Nombre,
           servicio_id: servicioElegido.id,
-          servicio_nombre: servicioElegido.nombre,
-          servicio_precio: servicioElegido.precio,
+          servicio_nombre: servicioElegido.NomCorte,
+          servicio_precio: servicioElegido.Precio,
           sede_id: sedeElegida.id,
-          sede_nombre: sedeElegida.nombre,
+          sede_nombre: sedeElegida.NomSede,
           fecha: fechaElegida,
           hora: horaElegida,
           estado: "pendiente",
@@ -165,16 +165,16 @@ export default function AgendarCitas() {
   const todoCompleto = sedeElegida && servicioElegido && barberoElegido && fechaElegida && horaElegida;
   const pasos = [sedeElegida, servicioElegido, barberoElegido, fechaElegida, horaElegida];
 
-  // ── Pantalla de éxito ─────────────────────────────────────
+  // ── Pantalla de éxito
   if (exito) {
     return (
       <div className="exito-wrap">
         <div className="exito-card">
           <div className="exito-icono">✅</div>
           <h2 className="exito-titulo">¡Cita agendada!</h2>
-          <p className="exito-detalle">{barberoElegido?.nombre} · {servicioElegido?.nombre}</p>
+          <p className="exito-detalle">{barberoElegido?.Nombre} · {servicioElegido?.NomCorte}</p>
           <p className="exito-fecha">{fechaElegida} · {horaElegida}</p>
-          <p className="exito-precio">${servicioElegido?.precio?.toLocaleString("es-CO")}</p>
+          <p className="exito-precio">${servicioElegido?.Precio?.toLocaleString("es-CO")}</p>
           <div className="exito-btns">
             <button className="btn-ver-citas" onClick={() => navigate("/mis-citas")}>
               Ver mis citas
@@ -188,12 +188,12 @@ export default function AgendarCitas() {
     );
   }
 
-  // ── Pantalla de carga ─────────────────────────────────────
+  // ── Pantalla de carga
   if (cargando) {
     return <div className="agendar-cargando">Cargando...</div>;
   }
 
-  // ── Pantalla principal ────────────────────────────────────
+  // ── Pantalla principal
   return (
     <div className="agendar-pagina">
       <div className="agendar-contenedor">
@@ -203,7 +203,7 @@ export default function AgendarCitas() {
           <span className="green-badge">Agendar Cita</span>
         </h1>
 
-        {/* BARRA DE PROGRESO */}
+        {/*barra de progreso */}
         <div className="agendar-progreso">
           {[1, 2, 3, 4, 5].map((n, i) => (
             <div
@@ -215,10 +215,10 @@ export default function AgendarCitas() {
           ))}
         </div>
 
-        {/* ERROR */}
+        {/*error*/}
         {error && <div className="agendar-error">{error}</div>}
 
-        {/* PASO 1: SEDE */}
+        {/*paso 1, sede */}
         <div className="agendar-grupo">
           <label className="agendar-label">
             <span className="agendar-numerito">1</span> Elige Sede
@@ -231,7 +231,7 @@ export default function AgendarCitas() {
             <option value="">Selecciona una sede...</option>
             {sedes.map(sede => (
               <option key={sede.id} value={sede.id}>
-                {sede.nombre} — {sede.ciudad}
+                {sede.NomSede} — {sede.Ciudad}
               </option>
             ))}
           </select>
@@ -250,7 +250,7 @@ export default function AgendarCitas() {
             <option value="">Selecciona un servicio...</option>
             {servicios.map(serv => (
               <option key={serv.id} value={serv.id}>
-                {serv.nombre} — ${serv.precio?.toLocaleString("es-CO")} ({serv.duracion_min} min)
+                {serv.NomCorte} — ${serv.Precio?.toLocaleString("es-CO")} ({serv.duracion_min} min)
               </option>
             ))}
           </select>
@@ -272,7 +272,7 @@ export default function AgendarCitas() {
             </option>
             {barberos.map(barb => (
               <option key={barb.id} value={barb.id}>
-                {barb.nombre} — {barb.especialidad}
+                {barb.Nombre} — {barb.especialidad}
               </option>
             ))}
           </select>
@@ -322,9 +322,9 @@ export default function AgendarCitas() {
           <div className="agendar-resumen">
             <p className="agendar-resumen-titulo">Resumen de tu cita</p>
             {[
-              ["Sede",     sedeElegida.nombre],
-              ["Servicio", servicioElegido.nombre],
-              ["Barbero",  barberoElegido.nombre],
+              ["Sede",     sedeElegida.NomSede],
+              ["Servicio", servicioElegido.NomCorte],
+              ["Barbero",  barberoElegido.Nombre],
               ["Fecha",    fechaElegida],
               ["Hora",     horaElegida],
             ].map(([label, valor]) => (
@@ -336,7 +336,7 @@ export default function AgendarCitas() {
             <div className="agendar-resumen-fila ultima">
               <span className="resumen-label">Total</span>
               <span className="resumen-precio">
-                ${servicioElegido.precio?.toLocaleString("es-CO")}
+                ${servicioElegido.Precio?.toLocaleString("es-CO")}
               </span>
             </div>
           </div>

@@ -2,7 +2,7 @@ import { useEffect, useState } from "react";
 import { collection, query, where, orderBy, onSnapshot, doc, runTransaction, arrayRemove } from "firebase/firestore";
 import { db, auth } from "../firebase";
 import { useNavigate } from "react-router-dom";
-import "./MisCitas.css"; // <--- Importamos el nuevo CSS
+import styles from "./MisCitas.module.css"; // <--- Importamos el CSS Module
 
 export default function MisCitas() {
   const navigate = useNavigate();
@@ -78,11 +78,11 @@ export default function MisCitas() {
       </header>
 
       {/* TABS */}
-      <div className="tabs-row">
+      <div className={styles.tabsRow}>
         {tabs.map(tab => (
           <button
             key={tab.valor}
-            className={`tab-btn ${tabActivo === tab.valor ? "active" : ""}`}
+            className={`${styles.tabBtn} ${tabActivo === tab.valor ? styles.active : ""}`}
             onClick={() => setTabActivo(tab.valor)}
           >
             {tab.etiqueta}
@@ -92,11 +92,11 @@ export default function MisCitas() {
 
       {/* CONTENIDO */}
       {cargando ? (
-        <div className="container-centrado">
+        <div className={styles.containerCentrado}>
           <p style={{ color: "var(--accent)", fontSize: 18 }}>Cargando...</p>
         </div>
       ) : citas.length === 0 ? (
-        <div className="container-centrado">
+        <div className={styles.containerCentrado}>
           <div style={{ fontSize: 56, marginBottom: 16 }}>
             {tabActivo === "pendiente" ? "📅" : tabActivo === "completada" ? "✅" : "❌"}
           </div>
@@ -118,18 +118,18 @@ export default function MisCitas() {
           )}
         </div>
       ) : (
-        <div className="citas-grid">
+        <div className={styles.citasGrid}>
           {citas.map(cita => (
             <div key={cita.id} className="barber-card" style={{ textAlign: "left" }}>
               
-              <div className="card-header">
+              <div className={styles.cardHeader}>
                 <div>
                   <div style={{ fontSize: 28, marginBottom: 8 }}>💈</div>
                   <h3 style={{ color: "#fff", margin: 0, fontSize: 18 }}>{cita.barbero_nombre}</h3>
                 </div>
                 <span className={`badge ${
                   cita.estado === "pendiente" ? "pending" : 
-                  cita.estado === "completada" ? "done" : "badge-cancelada"
+                  cita.estado === "completada" ? "done" : styles.badgeCancelada
                 }`}>
                   {cita.estado === "pendiente" ? "Próxima"
                     : cita.estado === "completada" ? "Completada"
@@ -137,32 +137,32 @@ export default function MisCitas() {
                 </span>
               </div>
 
-              <div className="info-row">
-                <span className="info-label">Servicio</span>
-                <span className="info-valor">{cita.servicio_nombre}</span>
+              <div className={styles.infoRow}>
+                <span className={styles.infoLabel}>Servicio</span>
+                <span className={styles.infoValor}>{cita.servicio_nombre}</span>
               </div>
-              <div className="info-row">
-                <span className="info-label">Fecha</span>
-                <span className="info-valor">{formatearFecha(cita.fecha)}</span>
+              <div className={styles.infoRow}>
+                <span className={styles.infoLabel}>Fecha</span>
+                <span className={styles.infoValor}>{formatearFecha(cita.fecha)}</span>
               </div>
-              <div className="info-row">
-                <span className="info-label">Hora</span>
-                <span className="info-valor">{cita.hora}</span>
+              <div className={styles.infoRow}>
+                <span className={styles.infoLabel}>Hora</span>
+                <span className={styles.infoValor}>{cita.hora}</span>
               </div>
-              <div className="info-row">
-                <span className="info-label">Sede</span>
-                <span className="info-valor">{cita.sede_nombre || "—"}</span>
+              <div className={styles.infoRow}>
+                <span className={styles.infoLabel}>Sede</span>
+                <span className={styles.infoValor}>{cita.sede_nombre || "—"}</span>
               </div>
-              <div className="info-row no-border">
-                <span className="info-label">Total</span>
-                <span className="info-total">
+              <div className={`${styles.infoRow} ${styles.noBorder}`}>
+                <span className={styles.infoLabel}>Total</span>
+                <span className={styles.infoTotal}>
                   ${cita.servicio_precio?.toLocaleString("es-CO")}
                 </span>
               </div>
 
               {cita.estado === "pendiente" && (
                 <button
-                  className="btn-cancelar-cita"
+                  className={styles.btnCancelarCita}
                   onClick={() => cancelarCita(cita)}
                 >
                   Cancelar cita
@@ -173,7 +173,7 @@ export default function MisCitas() {
         </div>
       )}
 
-      <div className="footer-actions">
+      <div className={styles.footerActions}>
         <button
           className="btn-primary"
           style={{ width: "auto", padding: "14px 36px" }}
