@@ -45,6 +45,16 @@ export default function Catalogo() {
         </button>
       </section>
 
+       {/* Tienda */}
+      <section className="cta-section">
+        <button className="btn-primary big"
+        onClick={() => navigate("/tienda")}>
+
+          Visitar tienda
+        </button>
+      </section>
+
     </div>
   );
 }
+     

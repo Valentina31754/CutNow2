@@ -1,0 +1,322 @@
+/* TiendaSection.css */
+
+/* Variables de color globales */
+:root {
+  --bg-color: #101010; /* Fondo casi negro */
+  --text-color: #ffffff; /* Texto blanco */
+  --text-muted: #aaaaaa; /* Texto atenuado */
+  --accent-color: #00d655; /* Verde brillante para acentos */
+  --card-bg: #1c1c1c; /* Fondo de la tarjeta gris oscuro */
+  --card-shadow: rgba(0, 0, 0, 0.4); /* Sombra de la tarjeta */
+  --filter-border: #333333; /* Borde de filtro oscuro */
+  --border-radius-lg: 12px;
+  --border-radius-md: 8px;
+}
+
+/* Estilos de restablecimiento básicos y diseño de contenedor principal */
+body {
+  margin: 0;
+  font-family: 'Inter', sans-serif; /* O tu fuente preferida */
+  background-color: var(--bg-color);
+  color: var(--text-color);
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+.store-section-container {
+  display: flex; /* Para colocar la cuadrícula principal y la barra lateral del carrito */
+  padding: 40px;
+  gap: 30px;
+  max-width: 1600px;
+  margin: 0 auto;
+  position: relative; /* Para el icono de destello en la esquina */
+}
+
+.store-section-main-content {
+  flex: 1; /* Ocupa el espacio restante a la izquierda de la barra lateral del carrito */
+}
+
+/* Estilos del encabezado */
+.store-section-header {
+  margin-bottom: 40px;
+}
+
+.store-section-title {
+  font-size: 3rem;
+  font-weight: 800;
+  line-height: 1.2;
+  margin: 0 0 15px;
+}
+
+.text-green {
+  color: var(--accent-color);
+}
+
+.store-section-subtitle {
+  font-size: 1.2rem;
+  color: var(--text-muted);
+  max-width: 600px;
+  margin: 0;
+}
+
+/* Estilos de la sección de filtros */
+.store-section-filters {
+  display: flex;
+  gap: 15px;
+  margin-bottom: 40px;
+}
+
+.store-section-filter-button {
+  background-color: transparent;
+  color: var(--text-color);
+  border: 1px solid var(--filter-border);
+  border-radius: var(--border-radius-md);
+  padding: 12px 24px;
+  font-size: 1rem;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  transition: all 0.2s ease-in-out;
+}
+
+.store-section-filter-button.active {
+  border-color: var(--accent-color);
+}
+
+.store-section-filter-button:hover {
+  background-color: rgba(255, 255, 255, 0.05);
+}
+
+.store-section-filter-button .filter-icon {
+    color: var(--accent-color);
+}
+
+
+/* Cuadrícula de productos - Aquí es donde ocurre la magia de la alineación y el mismo tamaño */
+.product-grid {
+  display: grid;
+  /* Crea una cuadrícula con columnas de ancho fijo. Se ajusta automáticamente al contenedor. */
+  grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+  gap: 20px; /* Espaciado uniforme entre las tarjetas */
+  /* Asegura que todas las tarjetas de una fila se estiren para tener la misma altura */
+  align-items: stretch;
+}
+
+/* Estilos de la card de producto */
+.product-card {
+  background-color: var(--card-bg);
+  border-radius: var(--border-radius-lg);
+  padding: 20px;
+  display: flex;
+  flex-direction: column; /* Diseño vertical interno */
+  justify-content: space-between; /* Empuja el contenido inferior hacia abajo */
+  border: 1px solid transparent; /* Borde sutil opcional, similar a la imagen */
+  transition: border-color 0.2s ease-in-out;
+  /* Altura fija o crecimiento uniforme es clave */
+  min-height: 480px; /* Ajusta según sea necesario para tu contenido */
+}
+
+/* Estilos internos de la card de producto */
+.product-card-image-wrapper {
+  position: relative;
+  background-color: #161616; /* Fondo gris oscuro uniforme para las imágenes */
+  border-radius: var(--border-radius-lg);
+  padding: 20px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  margin-bottom: 20px;
+  /* Altura de imagen fija */
+  height: 220px;
+  overflow: hidden; /* Mantiene la sombra dentro de los bordes redondeados */
+}
+
+.product-card-image {
+  max-width: 100%;
+  max-height: 100%;
+  object-fit: contain; /* Asegura que la imagen se ajuste sin recortarse */
+  z-index: 1; /* Mantiene la imagen sobre la sombra */
+}
+
+.product-card-image-shadow {
+    position: absolute;
+    bottom: 10px;
+    left: 10px;
+    right: 10px;
+    height: 30px;
+    background: radial-gradient(ellipse at center, rgba(0,0,0,0.4) 0%, rgba(0,0,0,0) 70%);
+    z-index: 0;
+    border-radius: 50%;
+}
+
+.product-card-details {
+  margin-bottom: 20px;
+  flex-grow: 1; /* Permite que esta sección ocupe el espacio disponible */
+}
+
+.product-card-name {
+  font-size: 1.1rem;
+  margin: 0 0 10px;
+  font-weight: 600;
+  /* Limita el texto del nombre a 2 líneas si es muy largo */
+  display: -webkit-box;
+  -webkit-line-clamp: 2;
+  line-clamp: 2;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+}
+
+.product-card-price {
+  color: var(--accent-color);
+  font-size: 1.3rem;
+  font-weight: 700;
+  margin: 0 0 5px;
+}
+
+.product-card-shipping {
+  color: var(--text-muted);
+  font-size: 0.9rem;
+  margin: 0;
+}
+
+.product-card-add-button {
+  background-color: var(--accent-color);
+  color: #000000; /* Texto de botón negro para contraste */
+  border: none;
+  border-radius: var(--border-radius-md);
+  padding: 15px;
+  width: 100%;
+  font-size: 1rem;
+  font-weight: 700;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  transition: background-color 0.2s ease-in-out;
+}
+
+.product-card-add-button:hover {
+  background-color: #00bf4c;
+}
+
+/* Estilos de la barra lateral del carrito */
+.cart-sidebar {
+    background-color: var(--card-bg);
+    border-radius: var(--border-radius-lg);
+    padding: 20px;
+    width: 320px; /* Ancho fijo para la barra lateral */
+    display: flex;
+    flex-direction: column;
+    align-self: flex-start; /* Evita que se estire a lo alto de la página principal */
+    border: 1px solid #333; /* Borde sutil similar a la imagen */
+}
+
+.cart-sidebar-title {
+    font-size: 1.5rem;
+    margin: 0 0 30px;
+}
+
+.cart-sidebar-items {
+    display: flex;
+    flex-direction: column;
+    gap: 15px;
+    margin-bottom: 30px;
+}
+
+.cart-sidebar-item {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.cart-sidebar-item-image {
+    width: 60px;
+    height: 60px;
+    border-radius: var(--border-radius-md);
+    object-fit: cover;
+    background-color: #262626; /* Fondo gris para las miniaturas */
+    padding: 5px;
+}
+
+.cart-sidebar-item-details {
+    flex: 1;
+}
+
+.cart-sidebar-item-name {
+    margin: 0 0 5px;
+    font-size: 0.9rem;
+    font-weight: 600;
+}
+
+.cart-sidebar-item-price {
+    color: var(--accent-color);
+    margin: 0;
+    font-size: 0.9rem;
+}
+
+.cart-sidebar-item-shipping {
+    color: var(--text-muted);
+    margin: 0;
+    font-size: 0.7rem;
+}
+
+.cart-sidebar-summary {
+    border-top: 1px solid #333;
+    padding-top: 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 20px;
+}
+
+.cart-sidebar-total-label {
+    font-size: 1rem;
+    font-weight: 600;
+    margin: 0;
+}
+
+.cart-sidebar-total-amount {
+    color: var(--accent-color);
+    font-size: 1.3rem;
+    font-weight: 700;
+    margin: 0;
+}
+
+.cart-sidebar-checkout-button {
+    background-color: var(--accent-color);
+    color: #000000;
+    border: none;
+    border-radius: var(--border-radius-md);
+    padding: 15px;
+    width: 100%;
+    font-size: 1rem;
+    font-weight: 700;
+    cursor: pointer;
+    transition: background-color 0.2s ease-in-out;
+}
+
+.cart-sidebar-checkout-button:hover {
+    background-color: #00bf4c;
+}
+
+/* Icono de destello en la esquina inferior derecha */
+.corner-sparkle-icon {
+    position: absolute;
+    bottom: 30px;
+    right: 30px;
+    opacity: 0.8;
+}
+
+/* Media Queries para adaptabilidad básica */
+@media (max-width: 1100px) {
+    .store-section-container {
+        flex-direction: column; /* Apila el carrito debajo en pantallas más pequeñas */
+        padding: 20px;
+    }
+    .cart-sidebar {
+        width: 100%; /* El carrito ocupa todo el ancho */
+        margin-top: 40px;
+    }
+}

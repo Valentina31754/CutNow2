@@ -5,6 +5,7 @@ import Catalogo from "./components/Catalogo";
 import Cita from "./components/Cita";
 import MisCitas from "./components/MisCitas";
 import AgendarCitas from "./components/AgendarCitas";
+import TiendaSection from "./components/TiendaSection";
 
 export default function App() {
   return (
@@ -16,6 +17,7 @@ export default function App() {
         <Route path="/cita/:id" element={<Cita />} />
         <Route path="/mis-citas" element={<MisCitas />} />
         <Route path="/agendar" element={<AgendarCitas />} />
+        <Route path="/tienda" element={<TiendaSection />} />
       </Routes>
     </BrowserRouter>
   );
