@@ -1,12 +1,26 @@
+import { useEffect, useState } from "react";
 import { useNavigate } from "react-router-dom";
+import { collection, getDocs } from "firebase/firestore";
+import { db } from "../firebase";
 
 export default function Catalogo() {
-  const navigate = useNavigate(); 
+  const navigate = useNavigate();
+  const [barberos, setBarberos] = useState([]);
+  const [cargando, setCargando] = useState(true);
+
+  useEffect(() => {
+    async function cargarBarberos() {
+      const snap = await getDocs(collection(db, "Barberos"));
+      setBarberos(snap.docs.map(d => ({ id: d.id, ...d.data() })));
+      setCargando(false);
+    }
+    cargarBarberos();
+  }, []);
 
   return (
     <div className="catalog-container">
       
-      {/*header*/}
+      {/* HEADER */}
       <header className="catalog-header">
         <h1>
           <span className="green-badge">Catálogo de Barberos</span>
@@ -14,47 +28,68 @@ export default function Catalogo() {
         <p>Selecciona un barbero y agenda tu cita</p>
       </header>
 
-      {/*tarjetas*/}
+      {/* TARJETAS */}
       <section className="card-grid">
-        {[1,2,3,4,5,6].map(i => (
-          <div key={i} className="barber-card placeholder">
-            <div className="avatar">💈</div>
-            <h3>Próximamente</h3>
-            <p>Barbero disponible pronto</p>
-            <button disabled>Agendar</button>
+        {cargando && <p>Cargando barberos...</p>}
+
+        {!cargando && barberos.length === 0 && (
+          <p>No hay barberos registrados</p>
+        )}
+
+        {barberos.map(barbero => (
+          <div key={barbero.id} className="barber-card">
+            <div className="avatar">
+              <img
+                src={barbero.foto}
+                alt={barbero.Nombre}
+                style={{ width: "80px", height: "80px", borderRadius: "50%" }}
+              />
+            </div>
+
+            <h3>{barbero.Nombre}</h3>
+            <p>{barbero.especialidad || "Barbero profesional"}</p>
+
+            {/* BOTÓN VERDE */}
+            <button
+              className="btn-primary"
+              onClick={() =>
+                navigate("/agendar", {
+                  state: { barberoSeleccionado: barbero }
+                })
+              }
+            >
+              Agendar
+            </button>
           </div>
         ))}
       </section>
 
-      {/*ver las citas*/}
-      <section className="cta-section">
+      {/* BOTONES CENTRADOS */}
+      <section
+        className="cta-section"
+        style={{ display: "flex", flexDirection: "column", alignItems: "center", gap: "16px" }}
+      >
         <button
           className="btn-primary big"
           onClick={() => navigate("/mis-citas")}
         >
           Ver mis citas
         </button>
-      </section>
 
-      {/* Acción principal */}
-      <section className="cta-section">
-        <button className="btn-primary big"
-        onClick={() => navigate("/agendar")}>
-
+        <button
+          className="btn-primary big"
+          onClick={() => navigate("/agendar")}
+        >
           Agendar cita rápida
         </button>
-      </section>
 
-       {/* Tienda */}
-      <section className="cta-section">
-        <button className="btn-primary big"
-        onClick={() => navigate("/tienda")}>
-
+        <button
+          className="btn-primary big"
+          onClick={() => navigate("/tienda")}
+        >
           Visitar tienda
         </button>
       </section>
-
     </div>
   );
 }
-     
