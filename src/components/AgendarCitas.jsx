@@ -1,6 +1,6 @@
 // src/components/AgendarCitas.jsx
 import { useState, useEffect } from "react";
-import { useNavigate } from "react-router-dom";
+import { useNavigate, useLocation } from "react-router-dom";
 import {
   collection, getDocs, doc, getDoc,
   runTransaction, arrayUnion, query,
@@ -11,6 +11,8 @@ import "./AgendarCitas.css";
 
 export default function AgendarCitas() {
   const navigate = useNavigate();
+  const location = useLocation();
+  const barberoDesdeCatalogo = location.state?.barberoElegido || null;
 
   // ── Datos de Firestore ────────────────────────────────────
   const [sedes, setSedes] = useState([]);
@@ -50,10 +52,21 @@ export default function AgendarCitas() {
     cargar();
   }, []);
 
+  // ── Preseleccionar barbero si viene del catálogo ──────────
+  useEffect(() => {
+    if (barberoDesdeCatalogo) {
+      setBarberoElegido(barberoDesdeCatalogo);
+    }
+  }, [barberoDesdeCatalogo]);
+
   // ── Carga barberos cuando cambia la sede ─────────────────
   useEffect(() => {
     if (!sedeElegida) return;
-    setBarberoElegido(null);
+
+    if (!barberoDesdeCatalogo) {
+      setBarberoElegido(null);
+    }
+
     setHoraElegida("");
     setHorasDisponibles([]);
 
@@ -68,7 +81,7 @@ export default function AgendarCitas() {
       setBarberos(snap.docs.map(d => ({ id: d.id, ...d.data() })));
     }
     cargarBarberos();
-  }, [sedeElegida]);
+  }, [sedeElegida, barberoDesdeCatalogo]);
 
   // ── Carga horas cuando cambia barbero, fecha o servicio ──
   useEffect(() => {
@@ -122,7 +135,6 @@ export default function AgendarCitas() {
           throw new Error("Este horario ya fue tomado. Elige otro.");
         }
 
-        // Guarda la cita con todos los datos necesarios
         transaction.set(citaRef, {
           usuario_id: usuario.uid,
           usuario_nombre: usuario.displayName || usuario.email,
@@ -140,7 +152,6 @@ export default function AgendarCitas() {
           fecha_creacion: serverTimestamp(),
         });
 
-        // Bloquea el slot del barbero
         transaction.set(disponRef, { slots_ocupados: arrayUnion(horaElegida) }, { merge: true });
       });
 
@@ -264,13 +275,17 @@ export default function AgendarCitas() {
           <select
             className="agendar-select"
             value={barberoElegido?.id || ""}
-            disabled={!sedeElegida}
+            disabled={barberoDesdeCatalogo || !sedeElegida}
             onChange={e => setBarberoElegido(barberos.find(x => x.id === e.target.value) || null)}
           >
             <option value="">
-              {!sedeElegida ? "Primero elige una sede..." : "Selecciona un barbero..."}
+              {barberoDesdeCatalogo
+                ? "Barbero seleccionado"
+                : !sedeElegida
+                ? "Primero elige una sede..."
+                : "Selecciona un barbero..."}
             </option>
-            {barberos.map(barb => (
+            {!barberoDesdeCatalogo && barberos.map(barb => (
               <option key={barb.id} value={barb.id}>
                 {barb.Nombre} — {barb.especialidad}
               </option>
@@ -293,7 +308,7 @@ export default function AgendarCitas() {
           />
         </div>
 
-        {}
+        {/* PASO 5: HORA */}
         <div className="agendar-grupo">
           <label className="agendar-label">
             <span className="agendar-numerito">5</span> Hora disponible
