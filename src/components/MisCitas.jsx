@@ -44,7 +44,7 @@ export default function MisCitas() {
 
     try {
       const citaRef = doc(db, "citas", cita.id);
-      const disponRef = doc(db, "barberos", cita.barbero_id, "disponibilidad", cita.fecha);
+      const disponRef = doc(db, "Barberos", cita.barbero_id, "disponibilidad", cita.fecha);
 
       await runTransaction(db, async (transaction) => {
         transaction.update(citaRef, { estado: "cancelada" });
