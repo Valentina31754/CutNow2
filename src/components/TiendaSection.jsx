@@ -178,7 +178,7 @@ const TiendaSection = () => {
         eliminarDelCarrito={eliminarDelCarrito}
       />
 
-      <SparkleIcon className="corner-sparkle-icon" />
+      {/* //<SparkleIcon className="corner-sparkle-icon" /> */}
     </div>
   );
 };
