@@ -1,5 +1,5 @@
 import { useEffect, useState } from "react";
-import { collection, query, where, orderBy, onSnapshot, doc, runTransaction, arrayRemove } from "firebase/firestore";
+import { collection, query, where, orderBy, onSnapshot, doc, runTransaction, arrayRemove, updateDoc } from "firebase/firestore";
 import { db, auth } from "../firebase";
 import { useNavigate } from "react-router-dom";
 import styles from "./MisCitas.module.css"; // <--- Importamos el CSS Module
@@ -29,6 +29,31 @@ export default function MisCitas() {
 
     const cancelarBusqueda = onSnapshot(q, (snapshot) => {
       const data = snapshot.docs.map(d => ({ id: d.id, ...d.data() }));
+      
+    
+      const ahora = new Date();
+
+      data.forEach(async (cita) => {
+        //verificamos si la cita sigue como pendiente
+        if (cita.estado === "pendiente") {
+          // Unimos la fecha ("2026-05-10") y hora ("14:30") para crear un objeto Date
+          const fechaCita = new Date(`${cita.fecha}T${cita.hora}:00`);
+
+          // Si la fecha y hora de la cita ya pasaron en comparación con "ahora"
+          if (fechaCita < ahora) {
+            const citaRef = doc(db, "citas", cita.id);
+            try {
+              // Actualizamos el documento en la base de datos
+              await updateDoc(citaRef, { estado: "completada" });
+            } catch (e) {
+              console.error("Error al completar la cita:", e);
+            }
+          }
+        }
+      });
+      // ── FIN LÓGICA DE ACTUALIZACIÓN AUTOMÁTICA ──
+
+      // Guardamos los datos en el estado para mostrarlos en pantalla
       setCitas(data);
       setCargando(false);
     });

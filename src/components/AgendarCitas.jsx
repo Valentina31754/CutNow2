@@ -4,7 +4,7 @@ import { useNavigate, useLocation } from "react-router-dom";
 import {
   collection, getDocs, doc, getDoc,
   runTransaction, arrayUnion, query,
-  where, serverTimestamp
+  where, serverTimestamp, updateDoc
 } from "firebase/firestore";
 import { db, auth } from "../firebase";
 import "./AgendarCitas.css";

@@ -1,3 +1,6 @@
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600&display=swap');
+
+
 * {
   box-sizing: border-box;
 }
@@ -190,7 +193,9 @@ p {
   color: white;
   font-weight: 600;
   box-shadow: 0 8px 20px rgba(0,200,83,.35);
-  font-family:'Lucida Sans', 'Lucida Sans Regular', 'Lucida Grande', 'Lucida Sans Unicode', Geneva, Verdana, sans-serif
+  font-family: 'inter', sans-serif;
+  font-weight: 500;
+  letter-spacing: .01em;
 }
 
 .badge {
