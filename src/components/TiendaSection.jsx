@@ -1,4 +1,7 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { collection, getDocs } from "firebase/firestore";
+import { db } from "../firebase"; // Asegúrate de que la ruta sea correcta
+
 import './TiendaSection.css';
 
 // --- Iconos SVG ---
@@ -8,25 +11,9 @@ const CartIcon = ({ className = "" }) => (
   </svg>
 );
 
-const SparkleIcon = ({ className = "" }) => (
-  <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="#00d655" stroke="#00d655" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round" className={className}>
-    <path d="M12 2l3.09 6.26L22 9.27l-5 4.87 1.18 6.88L12 17.77l-6.18 3.25L7 14.14 2 9.27l6.91-1.01L12 2z"></path>
-  </svg>
-);
-
-// --- Base de datos de productos ---
-const productos = [
-  { id: 1, nombre: 'Wahl Cordless Senior', precio: 179.99, envio: 'Envío Rápido', imagen: 'https://images.unsplash.com/photo-1621607512214-68297480165e?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=60', categoria: 'Herramientas' },
-  { id: 2, nombre: 'Kit de Navaja Dovo', precio: 179.99, envio: 'Envío Rápido', imagen: 'https://images.unsplash.com/photo-1605497788044-5a32c7078486?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=60', categoria: 'Herramientas' },
-  { id: 3, nombre: 'Pomp Clay 100g', precio: 24.99, envio: 'Envío Rápido', imagen: 'https://images.unsplash.com/photo-1621607512214-68297480165e?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=60', categoria: 'Productos' },
-  { id: 4, nombre: 'Aceite de Barba Citrus', precio: 19.99, envio: 'Envío Rápido', imagen: 'https://images.unsplash.com/photo-1605497788044-5a32c7078486?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=60', categoria: 'Productos' },
-  { id: 5, nombre: 'Tijeras Jaguar 6"', precio: 119.99, envio: 'Envío Rápido', imagen: 'https://images.unsplash.com/photo-1621607512214-68297480165e?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=60', categoria: 'Herramientas' },
-  { id: 6, nombre: 'Gel Extra Fuerte', precio: 15.99, envio: 'Envío Rápido', imagen: 'https://images.unsplash.com/photo-1605497788044-5a32c7078486?ixlib=rb-4.0.3&auto=format&fit=crop&w=500&q=60', categoria: 'Productos' },
-];
+// ¡Adiós a la base de datos falsa (const productos = [...])! La eliminamos.
 
 // --- Componentes Pequeños ---
-
-// 1. Recibimos la función agregarAlCarrito como Prop
 const ProductCard = ({ producto, agregarAlCarrito }) => {
   return (
     <div className="product-card">
@@ -37,9 +24,12 @@ const ProductCard = ({ producto, agregarAlCarrito }) => {
       <div className="product-card-details">
         <h3 className="product-card-name">{producto.nombre}</h3>
         <p className="product-card-price">${producto.precio}</p>
-        <p className="product-card-shipping">{producto.envio}</p>
+        
+        {/* Texto fijo indicando la modalidad de entrega */}
+        <p className="product-card-shipping" style={{ color: '#00d655', fontWeight: '500' }}>
+          📍 Recogida en local
+        </p>
       </div>
-      {/* 2. Disparamos la función al hacer clic */}
       <button 
         className="product-card-add-button"
         onClick={() => agregarAlCarrito(producto)}
@@ -51,10 +41,7 @@ const ProductCard = ({ producto, agregarAlCarrito }) => {
   );
 };
 
-// 3. Recibimos los productos actualizados del carrito y la función para eliminar
 const CartSidebar = ({ productosCarrito, eliminarDelCarrito }) => {
-    
-    // Calculamos el total dinámicamente sumando los precios
     const total = productosCarrito.reduce((suma, item) => suma + item.precio, 0);
 
     return (
@@ -74,7 +61,6 @@ const CartSidebar = ({ productosCarrito, eliminarDelCarrito }) => {
                               <p className="cart-sidebar-item-name">{producto.nombre}</p>
                               <p className="cart-sidebar-item-price">${producto.precio}</p>
                           </div>
-                          {/* Botón X para eliminar del carrito */}
                           <button 
                             onClick={() => eliminarDelCarrito(producto.idCarrito)}
                             style={{background: 'none', border: 'none', color: '#ff4444', cursor: 'pointer', fontSize: '18px'}}
@@ -88,7 +74,6 @@ const CartSidebar = ({ productosCarrito, eliminarDelCarrito }) => {
             
             <div className="cart-sidebar-summary">
                 <p className="cart-sidebar-total-label">Total</p>
-                {/* Mostramos el total calculado con 2 decimales */}
                 <p className="cart-sidebar-total-amount">${total.toFixed(2)}</p>
             </div>
             <button 
@@ -102,25 +87,40 @@ const CartSidebar = ({ productosCarrito, eliminarDelCarrito }) => {
     );
 };
 
-
 // --- COMPONENTE PRINCIPAL ---
 const TiendaSection = () => {
   const [activeTab, setActiveTab] = useState('Herramientas');
-  
-  // A. ESTADO DEL CARRITO (Inicia vacío)
   const [carrito, setCarrito] = useState([]);
+  
+  // ── NUEVOS ESTADOS PARA FIREBASE ──
+  const [productos, setProductos] = useState([]);
+  const [cargando, setCargando] = useState(true);
 
-  // B. FUNCIÓN PARA AGREGAR
+  // ── DESCARGAR DATOS DE FIREBASE ──
+  useEffect(() => {
+    async function cargarTienda() {
+      try {
+        // Apuntamos a la colección "Productos" en tu Firestore
+        const snap = await getDocs(collection(db, "Productos"));
+        const datos = snap.docs.map(doc => ({
+          id: doc.id,
+          ...doc.data()
+        }));
+        setProductos(datos);
+      } catch (error) {
+        console.error("Error al cargar los productos:", error);
+      } finally {
+        setCargando(false);
+      }
+    }
+    cargarTienda();
+  }, []);
+
   const agregarAlCarrito = (producto) => {
-    // Creamos una copia del producto y le asignamos un ID único 
-    // (por si el usuario agrega el mismo producto dos veces)
     const nuevoProducto = { ...producto, idCarrito: Date.now() + Math.random() };
-    
-    // Actualizamos el estado sumando el nuevo producto a los que ya estaban
     setCarrito([...carrito, nuevoProducto]);
   };
 
-  // C. FUNCIÓN PARA ELIMINAR (Opcional pero muy recomendada)
   const eliminarDelCarrito = (idCarrito) => {
     const nuevoCarrito = carrito.filter(item => item.idCarrito !== idCarrito);
     setCarrito(nuevoCarrito);
@@ -132,7 +132,7 @@ const TiendaSection = () => {
     { nombre: 'Accesorios', icono: '🛍️' }
   ];
 
-  // Filtramos los productos según la pestaña activa
+  // El filtrado funciona igual, pero ahora sobre los datos de Firebase
   const productosFiltrados = productos.filter(p => p.categoria === activeTab);
 
   return (
@@ -160,25 +160,32 @@ const TiendaSection = () => {
           ))}
         </nav>
 
-        <div className="product-grid">
-          {/* Pasamos la función de agregar como Prop a cada tarjeta */}
-          {productosFiltrados.map(producto => (
-            <ProductCard 
-              key={producto.id} 
-              producto={producto} 
-              agregarAlCarrito={agregarAlCarrito} 
-            />
-          ))}
-        </div>
+        {/* ── MANEJO DEL ESTADO DE CARGA ── */}
+        {cargando ? (
+          <p style={{ color: '#888', textAlign: 'center', marginTop: '40px' }}>
+            Cargando inventario premium...
+          </p>
+        ) : productosFiltrados.length === 0 ? (
+          <p style={{ color: '#888', textAlign: 'center', marginTop: '40px' }}>
+            No hay productos disponibles en esta categoría por ahora.
+          </p>
+        ) : (
+          <div className="product-grid">
+            {productosFiltrados.map(producto => (
+              <ProductCard 
+                key={producto.id} 
+                producto={producto} 
+                agregarAlCarrito={agregarAlCarrito} 
+              />
+            ))}
+          </div>
+        )}
       </div>
       
-      {/* Pasamos el estado del carrito y la función de eliminar al Sidebar */}
       <CartSidebar 
         productosCarrito={carrito} 
         eliminarDelCarrito={eliminarDelCarrito}
       />
-
-      {/* //<SparkleIcon className="corner-sparkle-icon" /> */}
     </div>
   );
 };
