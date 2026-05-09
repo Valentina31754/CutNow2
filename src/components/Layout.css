@@ -1,0 +1,135 @@
+/* src/components/Layout.css */
+
+/* --- HEADER --- */
+.main-header {
+  background-color: rgba(16, 16, 16, 0.95);
+  backdrop-filter: blur(10px);
+  border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+  position: sticky;
+  top: 0;
+  z-index: 1000;
+}
+
+.header-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 20px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+}
+
+.header-logo {
+  font-size: 1.8rem;
+  font-weight: 800;
+  color: #fff;
+  text-decoration: none;
+  letter-spacing: -1px;
+}
+
+.text-green {
+  color: #00d655;
+}
+
+.header-nav {
+  display: flex;
+  align-items: center;
+  gap: 30px;
+}
+
+.nav-link {
+  color: #aaa;
+  text-decoration: none;
+  font-weight: 500;
+  transition: color 0.3s ease;
+}
+
+.nav-link:hover {
+  color: #fff;
+}
+
+/* ── BOTÓN DEL HEADER (Estilo Premium Ghost) ── */
+.nav-btn-agendar {
+  background-color: transparent; 
+  color: #00d655; 
+  border: 1px solid rgba(0, 214, 85, 0.5);
+  text-decoration: none;
+  padding: 10px 22px; /* Un poco de padding extra para que se vea elegante */
+  border-radius: 8px;
+  font-weight: 600;
+  font-family: inherit;
+  transition: all 0.3s ease;
+}
+
+/* El efecto al pasar el mouse */
+.nav-btn-agendar:hover {
+  background-color: #00d655;
+  color: #000;
+  border-color: #00d655;
+  transform: translateY(-2px);
+  box-shadow: 0 8px 20px rgba(0, 214, 85, 0.25);
+}
+
+/* --- FOOTER --- */
+.main-footer {
+  background-color: #0a0a0a;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  padding: 60px 20px 20px;
+  margin-top: auto; /* Empuja el footer siempre hacia abajo */
+}
+
+.footer-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+  gap: 40px;
+  margin-bottom: 40px;
+}
+
+.footer-logo {
+  font-size: 1.5rem;
+  font-weight: 800;
+  color: #fff;
+  margin: 0 0 15px;
+}
+
+.footer-description {
+  color: #888;
+  line-height: 1.6;
+}
+
+.footer-title {
+  color: #fff;
+  font-size: 1.1rem;
+  margin: 0 0 20px;
+}
+
+.footer-links, .footer-contact {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.footer-links li, .footer-contact li {
+  margin-bottom: 12px;
+  color: #888;
+}
+
+.footer-links a {
+  color: #888;
+  text-decoration: none;
+  transition: color 0.3s ease;
+}
+
+.footer-links a:hover {
+  color: #00d655;
+}
+
+.footer-bottom {
+  text-align: center;
+  padding-top: 20px;
+  border-top: 1px solid rgba(255, 255, 255, 0.05);
+  color: #555;
+  font-size: 0.9rem;
+}
